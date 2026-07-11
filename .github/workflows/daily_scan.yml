@@ -2,6 +2,7 @@ name: Daily Signal Scan
 
 on:
   schedule:
+    # UTC。台股收盤 13:30 (UTC+8) → 05:50 UTC;美股收盤後 → 21:30 UTC
     - cron: "50 5 * * 1-5"
     - cron: "30 21 * * 1-5"
   workflow_dispatch: {}
@@ -22,16 +23,19 @@ jobs:
       - name: Install deps
         run: pip install yfinance pandas numpy requests
 
+      - name: Fetch price cache
+        run: python signals/fetch_prices.py
+
       - name: Run scanner
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python signals/scanner.py
 
-      - name: Commit signal state
+      - name: Commit data
         run: |
           git config user.name "qlab-bot"
           git config user.email "qlab-bot@users.noreply.github.com"
-          git add data/signal_state.json
-          git diff --cached --quiet || git commit -m "chore: update signal state [skip ci]"
+          git add data/
+          git diff --cached --quiet || git commit -m "chore: update prices & signal state [skip ci]"
           git push
