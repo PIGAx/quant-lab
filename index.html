@@ -99,6 +99,31 @@ dialog{background:var(--panel);color:var(--ink);border:1px solid var(--line);bor
 dialog::backdrop{background:rgba(0,0,0,.6)}
 .dlg-actions{display:flex;gap:10px;margin-top:18px;justify-content:flex-end}
 .log-item{font-size:12px;font-family:var(--mono);color:var(--ink-dim);padding:6px 0;border-bottom:1px dashed var(--line)}
+
+/* ── 市場總覽(TradingView 風格) ── */
+.mkt-grid{display:grid;grid-template-columns:minmax(0,2.2fr) minmax(280px,1fr);gap:16px}
+@media(max-width:900px){.mkt-grid{grid-template-columns:1fr}}
+.feat{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+.feat .head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.feat .sym{font-size:13px;font-family:var(--mono);color:var(--ink-dim)}
+.feat .name{font-size:18px;font-weight:700}
+.feat .px{font-size:30px;font-family:var(--mono);font-weight:700;margin-top:4px}
+.feat .chg{font-size:14px;font-family:var(--mono);margin-left:10px}
+.feat .ranges{display:flex;gap:4px;margin:12px 0 8px}
+.feat .ranges button{background:none;border:1px solid transparent;color:var(--ink-dim);font-family:var(--mono);font-size:12px;padding:4px 10px;border-radius:6px;cursor:pointer}
+.feat .ranges button.on{color:var(--amber);border-color:var(--line);background:var(--panel2)}
+.feat .chartbox{height:340px;position:relative}
+.idx-list{display:flex;flex-direction:column;gap:8px}
+.idx-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:10px 14px;display:grid;grid-template-columns:1fr 84px auto;align-items:center;gap:10px;cursor:pointer;transition:border-color .15s}
+.idx-card:hover,.idx-card.on{border-color:var(--amber)}
+.idx-card .nm{font-weight:600;font-size:13.5px}
+.idx-card .tk{font-family:var(--mono);font-size:11px;color:var(--ink-dim)}
+.idx-card canvas{width:84px;height:30px}
+.idx-card .pxbox{text-align:right;font-family:var(--mono)}
+.idx-card .lp{font-size:14px;font-weight:700}
+.idx-card .cp{font-size:12px}
+.c-up{color:var(--tw-up)} .c-dn{color:var(--tw-down)}
+.mkt-note{margin-top:14px}
 @media(max-width:640px){main,header,nav{padding-left:14px;padding-right:14px}}
 </style>
 </head>
@@ -112,7 +137,8 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 </header>
 
 <nav>
-  <button class="active" data-tab="vault">📓 策略庫</button>
+  <button class="active" data-tab="market">📈 市場總覽</button>
+  <button data-tab="vault">📓 策略庫</button>
   <button data-tab="backtest">🧪 回測室</button>
   <button data-tab="script">🐍 腳本產生器</button>
   <button data-tab="pine">🌲 Pine Script</button>
@@ -122,8 +148,39 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 
 <main>
 
+<!-- ═══════════ 市場總覽 ═══════════ -->
+<section class="tab show" id="tab-market">
+  <div class="empty" id="mktEmpty" style="display:none">
+    尚無價格資料。部署到 GitHub Pages 並在 Actions 手動跑一次「Daily Signal Scan」後,
+    這裡就會出現市場總覽(之後每個交易日收盤自動更新)。<br>
+    <span style="font-size:12px">Claude 預覽環境無法讀取 repo 資料,屬正常現象。</span>
+  </div>
+  <div class="mkt-grid" id="mktGrid" style="display:none">
+    <div class="feat">
+      <div class="head">
+        <span class="name" id="ftName">—</span>
+        <span class="sym" id="ftSym"></span>
+        <span class="sym" id="ftUpd" style="margin-left:auto"></span>
+      </div>
+      <div><span class="px" id="ftPx">—</span><span class="chg" id="ftChg"></span></div>
+      <div class="ranges" id="ftRanges">
+        <button data-r="22">1M</button><button data-r="66">3M</button>
+        <button data-r="126" class="on">6M</button><button data-r="252">1Y</button>
+        <button data-r="0">3Y</button>
+      </div>
+      <div class="chartbox"><canvas id="ftChart"></canvas></div>
+    </div>
+    <div class="idx-list" id="idxList"></div>
+  </div>
+  <p class="hint mkt-note" id="mktNote" style="display:none">
+    點左側卡片切換主圖。資料為還原日線(GitHub Actions 每交易日收盤後更新);
+    台股與台幣採紅漲綠跌,美股採 green-up。要看即時盤中走勢請開
+    <a href="https://tw.tradingview.com" target="_blank">TradingView</a>。
+  </p>
+</section>
+
 <!-- ═══════════ 策略庫 ═══════════ -->
-<section class="tab show" id="tab-vault">
+<section class="tab" id="tab-vault">
   <div class="filters">
     <button class="btn" onclick="openEditor()">＋ 新增策略</button>
     <select id="fCat" onchange="renderVault()">
@@ -149,13 +206,22 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 <section class="tab" id="tab-backtest">
   <div class="card">
     <h3>① 載入價格資料</h3>
-    <p class="hint">貼上 CSV(Yahoo Finance 歷史資料格式:Date,Open,High,Low,Close,Adj Close,Volume,欄位順序可自動辨識),或先用合成範例資料測試引擎。</p>
-    <textarea id="csvInput" rows="5" placeholder="Date,Open,High,Low,Close,Adj Close,Volume&#10;2023-01-03,384.37,386.43,377.83,380.82,373.51,74850700&#10;..."></textarea>
-    <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap">
-      <button class="btn" onclick="loadCSV()">解析 CSV</button>
-      <button class="btn ghost" onclick="loadSample()">載入範例資料(合成 5 年日線)</button>
-      <span class="hint" id="dataInfo" style="align-self:center"></span>
+    <div class="row3">
+      <div style="grid-column:span 2">
+        <label>從自動資料庫選擇(GitHub Actions 每日更新,3 年還原日線)</label>
+        <select id="btTicker"><option value="">載入中…</option></select>
+      </div>
+      <div style="align-self:end;display:flex;gap:8px">
+        <button class="btn" onclick="loadTicker()">載入標的</button>
+        <button class="btn ghost" onclick="loadSample()">合成範例</button>
+      </div>
     </div>
+    <p class="hint" id="dataInfo" style="margin-top:8px">想加標的到資料庫:編輯 repo 的 <code style="color:var(--amber)">config/watchlist.json</code>,下次掃描自動納入。</p>
+    <details style="margin-top:10px">
+      <summary class="hint" style="cursor:pointer">或手動貼上 CSV(Yahoo Finance 格式,備援用)</summary>
+      <textarea id="csvInput" rows="5" style="margin-top:8px" placeholder="Date,Open,High,Low,Close,Adj Close,Volume&#10;2023-01-03,384.37,386.43,377.83,380.82,373.51,74850700&#10;..."></textarea>
+      <button class="btn ghost" style="margin-top:8px" onclick="loadCSV()">解析 CSV</button>
+    </details>
   </div>
 
   <div class="card">
@@ -1130,8 +1196,161 @@ if allHit and not allHit[1]
 // 4. 免費版改用 repo 的 GitHub Actions 每日掃描,同樣可收 Telegram`;
 }
 
+/* ════════════════ 市場總覽(TradingView 風格) ════════════════ */
+let MKT = null;               // manifest: data/prices/index.json
+const SERIES_CACHE = {};      // 各標的完整日線快取
+let ftChart = null, ftItem = null, ftRange = 126;
+
+async function loadMarket(){
+  try{
+    const r = await fetch('data/prices/index.json?_=' + Date.now());
+    if(!r.ok) throw new Error('no data');
+    MKT = await r.json();
+    if(!Array.isArray(MKT) || !MKT.length) throw new Error('empty');
+    document.getElementById('mktGrid').style.display = 'grid';
+    document.getElementById('mktNote').style.display = 'block';
+    renderIdxList();
+    setFeatured(MKT[0]);
+    fillTickerSelect();
+  }catch(e){
+    document.getElementById('mktEmpty').style.display = 'block';
+    const sel = document.getElementById('btTicker');
+    if(sel) sel.innerHTML = '<option value="">(資料庫未就緒,請用合成範例或 CSV)</option>';
+  }
+}
+function convUp(m){ return m === 'US' ? false : true; }  // TW/FX:紅漲;US:綠漲
+function chgColor(item){
+  const up = item.chgPct >= 0;
+  if(convUp(item.market)) return up ? 'var(--tw-up)' : 'var(--tw-down)';
+  return up ? 'var(--tw-down)' : 'var(--tw-up)';
+}
+function chgHex(item){
+  const up = item.chgPct >= 0;
+  if(convUp(item.market)) return up ? '#e5484d' : '#2fa66c';
+  return up ? '#2fa66c' : '#e5484d';
+}
+function fmtChg(item){
+  const s = item.chg >= 0 ? '+' : '';
+  return `${s}${item.chg.toLocaleString()} (${s}${item.chgPct.toFixed(2)}%)`;
+}
+
+function renderIdxList(){
+  const box = document.getElementById('idxList');
+  box.innerHTML = MKT.map((it,i)=>`
+    <div class="idx-card${i===0?' on':''}" id="idx_${i}" onclick="setFeatured(MKT[${i}], ${i})">
+      <div><div class="nm">${esc(it.name)}</div><div class="tk">${esc(it.ticker)}</div></div>
+      <canvas width="168" height="60"></canvas>
+      <div class="pxbox">
+        <div class="lp">${it.last.toLocaleString()}</div>
+        <div class="cp" style="color:${chgColor(it)}">${(it.chgPct>=0?'+':'')}${it.chgPct.toFixed(2)}%</div>
+      </div>
+    </div>`).join('');
+  MKT.forEach((it,i)=>{
+    drawSpark(document.querySelector('#idx_'+i+' canvas'), it.spark, chgHex(it));
+  });
+}
+function drawSpark(cv, pts, color){
+  const ctx = cv.getContext('2d'), w = cv.width, h = cv.height;
+  const min = Math.min(...pts), max = Math.max(...pts), rng = (max-min) || 1;
+  ctx.clearRect(0,0,w,h);
+  ctx.beginPath();
+  pts.forEach((p,i)=>{
+    const x = i/(pts.length-1)*w, y = h-6-(p-min)/rng*(h-12);
+    i ? ctx.lineTo(x,y) : ctx.moveTo(x,y);
+  });
+  ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.stroke();
+  ctx.lineTo(w,h); ctx.lineTo(0,h); ctx.closePath();
+  const g = ctx.createLinearGradient(0,0,0,h);
+  g.addColorStop(0, color+'44'); g.addColorStop(1, color+'00');
+  ctx.fillStyle = g; ctx.fill();
+}
+
+async function getSeries(item){
+  if(SERIES_CACHE[item.file]) return SERIES_CACHE[item.file];
+  const r = await fetch('data/prices/' + item.file + '?_=' + Date.now());
+  if(!r.ok) throw new Error('讀取失敗');
+  const s = await r.json();
+  SERIES_CACHE[item.file] = s;
+  return s;
+}
+async function setFeatured(item, idx){
+  ftItem = item;
+  document.querySelectorAll('.idx-card').forEach(c=>c.classList.remove('on'));
+  if(idx != null){ const el = document.getElementById('idx_'+idx); if(el) el.classList.add('on'); }
+  document.getElementById('ftName').textContent = item.name;
+  document.getElementById('ftSym').textContent = item.ticker;
+  document.getElementById('ftUpd').textContent = '更新:' + item.updated;
+  document.getElementById('ftPx').textContent = item.last.toLocaleString();
+  const chgEl = document.getElementById('ftChg');
+  chgEl.textContent = fmtChg(item);
+  chgEl.style.color = chgColor(item);
+  try{ drawFeatured(await getSeries(item)); }
+  catch(e){ console.error(e); }
+}
+document.getElementById('ftRanges').addEventListener('click', async e=>{
+  if(e.target.tagName !== 'BUTTON') return;
+  document.querySelectorAll('#ftRanges button').forEach(b=>b.classList.remove('on'));
+  e.target.classList.add('on');
+  ftRange = parseInt(e.target.dataset.r);
+  if(ftItem) drawFeatured(await getSeries(ftItem));
+});
+function drawFeatured(s){
+  const n = s.c.length;
+  const start = ftRange > 0 ? Math.max(0, n - ftRange) : 0;
+  const dates = s.dates.slice(start), close = s.c.slice(start);
+  const periodUp = close[close.length-1] >= close[0];
+  const upIsRed = convUp(s.market);
+  const hex = (periodUp === upIsRed) ? '#e5484d' : '#2fa66c';
+
+  const ctx = document.getElementById('ftChart').getContext('2d');
+  const g = ctx.createLinearGradient(0,0,0,340);
+  g.addColorStop(0, hex+'3a'); g.addColorStop(1, hex+'00');
+  if(ftChart) ftChart.destroy();
+  ftChart = new Chart(ctx, {
+    type:'line',
+    data:{labels:dates, datasets:[{
+      data:close, borderColor:hex, backgroundColor:g, fill:true,
+      borderWidth:1.8, pointRadius:0, pointHitRadius:8, tension:.08,
+    }]},
+    options:{responsive:true, maintainAspectRatio:false, animation:{duration:250},
+      interaction:{mode:'index', intersect:false},
+      plugins:{legend:{display:false},
+        tooltip:{backgroundColor:'#0a0f18', borderColor:'#28344a', borderWidth:1,
+          titleFont:{family:'monospace'}, bodyFont:{family:'monospace'},
+          callbacks:{label:c=>' '+c.parsed.y.toLocaleString()}}},
+      scales:{
+        x:{ticks:{color:'#8b98ad', maxTicksLimit:7, font:{size:11}}, grid:{display:false}},
+        y:{position:'right', ticks:{color:'#8b98ad', font:{family:'monospace', size:11}},
+           grid:{color:'#1c2536'}}}}
+  });
+}
+
+/* ── 回測室:從資料庫載入標的 ── */
+function fillTickerSelect(){
+  const sel = document.getElementById('btTicker');
+  if(!sel || !MKT) return;
+  const watch = MKT.filter(x=>!x.isIndex), idxs = MKT.filter(x=>x.isIndex);
+  sel.innerHTML =
+    (watch.length ? '<optgroup label="觀察清單">' + watch.map(x=>
+      `<option value="${x.file}">${esc(x.name)}(${x.ticker})</option>`).join('') + '</optgroup>' : '') +
+    '<optgroup label="市場指數">' + idxs.map(x=>
+      `<option value="${x.file}">${esc(x.name)}(${x.ticker})</option>`).join('') + '</optgroup>';
+}
+async function loadTicker(){
+  const sel = document.getElementById('btTicker');
+  if(!sel.value){ alert('資料庫未就緒,請先在 GitHub Actions 跑一次掃描,或改用合成範例/CSV'); return; }
+  const item = MKT.find(x=>x.file === sel.value);
+  try{
+    const s = await getSeries(item);
+    PRICES = {dates:s.dates, close:s.c, high:s.h, low:s.l};
+    document.getElementById('dataInfo').textContent =
+      `已載入 ${item.name}(${item.ticker})${s.c.length} 筆:${s.dates[0]} → ${s.dates[s.dates.length-1]}`;
+  }catch(e){ alert('載入失敗:'+e.message); }
+}
+
 /* ════════════════ 啟動 ════════════════ */
 loadDB();
+loadMarket();
 </script>
 </body>
 </html>
