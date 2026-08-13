@@ -5,23 +5,23 @@
     "price": 2435.0
   },
   "0050.TW|breakout|{\"inN\": 20, \"outN\": 10}": {
-    "signal": 1,
-    "date": "2026-08-13",
-    "price": 106.7
+    "signal": 0,
+    "date": "2026-08-12",
+    "price": 105.2
   },
   "SPY|seasonal|{\"months\": [11, 12, 1, 2, 3, 4]}": {
     "signal": 0,
-    "date": "2026-08-12",
-    "price": 772.49
+    "date": "2026-08-13",
+    "price": 777.88
   },
   "QQQ|momentum|{\"lookback\": 120}": {
     "signal": 1,
-    "date": "2026-08-12",
-    "price": 723.7
+    "date": "2026-08-13",
+    "price": 732.07
   },
   "006208.TW|rsi_pullback|{\"buyLv\": 30, \"maLen\": 200, \"rsiLen\": 14, \"tpLv\": 70}": {
     "signal": 0,
-    "date": "2026-08-13",
-    "price": 244.4
+    "date": "2026-08-12",
+    "price": 240.9
   }
 }
