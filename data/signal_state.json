@@ -11,13 +11,13 @@
   },
   "SPY|seasonal|{\"months\": [11, 12, 1, 2, 3, 4]}": {
     "signal": 0,
-    "date": "2026-08-26",
-    "price": 766.08
+    "date": "2026-08-27",
+    "price": 771.66
   },
   "QQQ|momentum|{\"lookback\": 120}": {
     "signal": 1,
-    "date": "2026-08-26",
-    "price": 711.37
+    "date": "2026-08-27",
+    "price": 719.83
   },
   "006208.TW|rsi_pullback|{\"buyLv\": 30, \"maLen\": 200, \"rsiLen\": 14, \"tpLv\": 70}": {
     "signal": 0,
