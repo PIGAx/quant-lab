@@ -6,22 +6,22 @@
   },
   "0050.TW|breakout|{\"inN\": 20, \"outN\": 10}": {
     "signal": 1,
-    "date": "2026-09-11",
-    "price": 107.7
+    "date": "2026-09-10",
+    "price": 109.15
   },
   "SPY|seasonal|{\"months\": [11, 12, 1, 2, 3, 4]}": {
     "signal": 0,
-    "date": "2026-09-10",
-    "price": 757.83
+    "date": "2026-09-11",
+    "price": 764.29
   },
   "QQQ|momentum|{\"lookback\": 120}": {
     "signal": 1,
-    "date": "2026-09-10",
-    "price": 708.69
+    "date": "2026-09-11",
+    "price": 714.88
   },
   "006208.TW|rsi_pullback|{\"buyLv\": 30, \"maLen\": 200, \"rsiLen\": 14, \"tpLv\": 70}": {
     "signal": 0,
-    "date": "2026-09-11",
-    "price": 246.1
+    "date": "2026-09-10",
+    "price": 249.55
   }
 }
