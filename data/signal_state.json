@@ -1,27 +1,27 @@
 {
   "2330.TW|ma_cross|{\"fast\": 20, \"slow\": 60}": {
     "signal": 1,
-    "date": "2026-10-05",
-    "price": 2575.0
+    "date": "2026-10-06",
+    "price": 2580.0
   },
   "0050.TW|breakout|{\"inN\": 20, \"outN\": 10}": {
     "signal": 1,
-    "date": "2026-10-05",
+    "date": "2026-10-06",
     "price": 115.95
   },
   "SPY|seasonal|{\"months\": [11, 12, 1, 2, 3, 4]}": {
     "signal": 0,
-    "date": "2026-10-02",
-    "price": 769.64
+    "date": "2026-10-05",
+    "price": 774.83
   },
   "QQQ|momentum|{\"lookback\": 120}": {
     "signal": 1,
-    "date": "2026-10-02",
-    "price": 749.58
+    "date": "2026-10-05",
+    "price": 756.2
   },
   "006208.TW|rsi_pullback|{\"buyLv\": 30, \"maLen\": 200, \"rsiLen\": 14, \"tpLv\": 70}": {
     "signal": 0,
-    "date": "2026-10-05",
-    "price": 265.35
+    "date": "2026-10-06",
+    "price": 265.4
   }
 }
