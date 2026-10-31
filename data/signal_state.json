@@ -6,8 +6,8 @@
   },
   "0050.TW|breakout|{\"inN\": 20, \"outN\": 10}": {
     "signal": 0,
-    "date": "2026-10-30",
-    "price": 104.95
+    "date": "2026-10-29",
+    "price": 107.25
   },
   "SPY|seasonal|{\"months\": [11, 12, 1, 2, 3, 4]}": {
     "signal": 0,
@@ -21,7 +21,7 @@
   },
   "006208.TW|rsi_pullback|{\"buyLv\": 30, \"maLen\": 200, \"rsiLen\": 14, \"tpLv\": 70}": {
     "signal": 0,
-    "date": "2026-10-30",
-    "price": 240.75
+    "date": "2026-10-29",
+    "price": 245.75
   }
 }
