@@ -7,21 +7,21 @@
   "0050.TW|breakout|{\"inN\": 20, \"outN\": 10}": {
     "signal": 0,
     "date": "2026-11-18",
-    "price": 93.1
+    "price": 94.1
   },
   "SPY|seasonal|{\"months\": [11, 12, 1, 2, 3, 4]}": {
     "signal": 1,
-    "date": "2026-11-17",
-    "price": 732.44
+    "date": "2026-11-18",
+    "price": 732.73
   },
   "QQQ|momentum|{\"lookback\": 120}": {
     "signal": 0,
-    "date": "2026-11-17",
-    "price": 656.95
+    "date": "2026-11-18",
+    "price": 658.6
   },
   "006208.TW|rsi_pullback|{\"buyLv\": 30, \"maLen\": 200, \"rsiLen\": 14, \"tpLv\": 70}": {
     "signal": 0,
     "date": "2026-11-18",
-    "price": 209.9
+    "price": 212.0
   }
 }
