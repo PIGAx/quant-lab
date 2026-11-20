@@ -2,12 +2,12 @@
   "2330.TW|ma_cross|{\"fast\": 20, \"slow\": 60}": {
     "signal": 0,
     "date": "2026-11-20",
-    "price": 2025.0
+    "price": 2000.0
   },
   "0050.TW|breakout|{\"inN\": 20, \"outN\": 10}": {
     "signal": 0,
     "date": "2026-11-20",
-    "price": 85.9
+    "price": 84.45
   },
   "SPY|seasonal|{\"months\": [11, 12, 1, 2, 3, 4]}": {
     "signal": 1,
@@ -22,6 +22,6 @@
   "006208.TW|rsi_pullback|{\"buyLv\": 30, \"maLen\": 200, \"rsiLen\": 14, \"tpLv\": 70}": {
     "signal": 0,
     "date": "2026-11-20",
-    "price": 193.3
+    "price": 189.8
   }
 }
